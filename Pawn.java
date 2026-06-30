@@ -1,90 +1,40 @@
-import java.util.*;
-public class Pawn
-{
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 
-	public void check_Pawn_Move(int b,int a,int i,int j)			//INTIAL LOCATION(a,b) TO FINAL LOCATION(i,j) 
-	{//x is to check Computer and User Movements 
+class Pawn {
+    public List<Point> getMoves(String[][] board, int row, int col, boolean whiteTurn) {
+        List<Point> moves = new ArrayList<>();
+        int direction = whiteTurn ? -1 : 1;
+        int startRow = whiteTurn ? 6 : 1;
 
-		if(arr[i][j]==0) 
+        int nextRow = row + direction;
+        if (nextRow >= 0 && nextRow < 8 && board[nextRow][col] == null) {
+            moves.add(new Point(nextRow, col));
+            if (row == startRow) {
+                int twoStepRow = row + 2 * direction;
+                if (twoStepRow >= 0 && twoStepRow < 8 && board[twoStepRow][col] == null) {
+                    moves.add(new Point(twoStepRow, col));
+                }
+            }
+        }
 
-		{ 
+        if (nextRow >= 0 && nextRow < 8) {
+            for (int deltaCol : new int[]{-1, 1}) {
+                int nextCol = col + deltaCol;
+                if (nextCol >= 0 && nextCol < 8) {
+                    String target = board[nextRow][nextCol];
+                    if (target != null && isEnemy(target, whiteTurn)) {
+                        moves.add(new Point(nextRow, nextCol));
+                    }
+                }
+            }
+        }
 
-			if(b==1) 
+        return moves;
+    }
 
-			{
-
-				if(i<=b+2&&j==a) 
-
-				{ 
-
-					arr[i][j]=1; 
-
-					arr[b][a]=0; 
-
-				} 
-
-				else 
-
-				Computer_movements(); 
-
-			} 
-			else 
-
-			{ 
-
-				if(i==b+1&&j==a) 
-
-				{ 
-
-					arr[i][j]=1; 
-
-					arr[b][a]=0; 
-
-				} 
-
-				else 
-
-					Computer_movements(); 
-
-  
-
-			} 
-
-		} 
-
-		else if(arr[i][j]>10) 
-
-		{ 
-
-			if(i==b+1&&j==a+1) 
-
-			{ 
-
-				arr[i][j]=1; 
-
-				arr[b][a]=0; 
-
-			} 
-
-			if(i==b+1&&j==a-1) 
-
-			{ 
-
-				arr[i][j]=1; 
-
-				arr[b][a]=0; 
-
-			} 
-
-			else 
-
-				Computer_movements(); 
-
-		} 
-
-		else 
-
-			Computer_movements(); 
-
-	} 
+    private boolean isEnemy(String piece, boolean whiteTurn) {
+        return (whiteTurn && piece.startsWith("b")) || (!whiteTurn && piece.startsWith("w"));
+    }
 }
